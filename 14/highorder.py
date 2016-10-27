@@ -9,7 +9,7 @@ class Solution(object):
         return reduce(lambda x, y: self.prefix(x, y), strs)
     
     def prefix(self, left, right):
-        minLen = min(map(len, [left, right]))
+        minLen = min(len(left), len(right))
         for i in xrange(0, minLen):
             if left[i] != right[i]:
                 return left[:i]
