@@ -4,45 +4,30 @@ class Solution(object):
         :type board: List[List[str]]
         :rtype: bool
         """
-        
-        for i in xrange(0, 9):
-            idxs_list = [self.row_indexes(i), self.col_indexes(i), self.box_indexes(i)]
-            for idxs in idxs_list:
-                if not self.is_valid_group(board, idxs):
+        for func in [self.posInRow, self.posInColumn, self.posInBox]:
+            for i in xrange(0, 9):
+                if self.hasDuplicate(board, func(i)):
                     return False
         return True
     
-    def is_valid_group(self, board, indexes):
-        used = set()
-        for row, col in indexes:
-            num = board[row][col]
-            if num != '.' and num in used:
-                return False
-            elif num != '.':
-                used.add(num)
-        return True
-    
-    def row_indexes(self, row_idx):
-        l = []
+    def posInRow(self, rowIdx):
         for i in xrange(0, 9):
-            l.append((row_idx, i))
-        return l
+            yield (rowIdx, i)
     
-    def col_indexes(self, col_idx):
-        l = []
+    def posInColumn(self, colIdx):
         for i in xrange(0, 9):
-            l.append((i, col_idx))
-        return l
+            yield (i, colIdx)
     
-    def box_indexes(self, box_idx):
-        l = []
+    def posInBox(self, boxIdx):
         for i in xrange(0, 9):
-            row = int(box_idx / 3) * 3 + int(i/3)
-            col = (box_idx % 3) * 3 + (i% 3)
-            l.append((row, col))
-        return l
-            
-        
-if __name__ == "__main__":
-    s = Solution()
-    print s.isValidSudoku([".87654321","2........","3........","4........","5........","6........","7........","8........","9........"])
+            row = (boxIdx / 3) * 3 + (i / 3)
+            col = (boxIdx % 3) * 3 + (i % 3)
+            yield (row, col)
+    
+    def hasDuplicate(self, board, positions):
+        appeared = set()
+        for row, col in positions:
+            value = board[row][col]
+            if value != '.' and value in appeared:
+                return True
+            appeared.add(value)
